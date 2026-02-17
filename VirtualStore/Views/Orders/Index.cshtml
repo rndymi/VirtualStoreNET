@@ -1,0 +1,54 @@
+﻿@model IEnumerable<VirtualStore.Order>
+
+@{
+    ViewBag.Title = "My Orders";
+}
+
+<h2>My Orders</h2>
+
+@if (!Model.Any())
+{
+    <p>You have no orders yet.</p>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>
+                Order Number
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Total
+            </th>
+            <th>
+                Status
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var order in Model)
+        {
+            <tr>
+                <td>
+                    @order.Id
+                </td>
+                <td>
+                    @order.dateOrder
+                </td>
+                <td>
+                    € @order.totalAmount
+                </td>
+                <td>
+                    @order.statusOrder
+                </td>
+                <td>
+                    @Html.ActionLink("View Details", "Details", new { id = order.Id }, new { @class = "btn btn-info btn-sm" })
+                </td>
+            </tr>
+        }
+
+    </table>
+}

@@ -1,0 +1,61 @@
+﻿@model VirtualStore.Order
+
+@{
+    ViewBag.Title = "Order Details";
+}
+
+<h2>Order Details</h2>
+
+<p>
+    <strong>Order Number:</strong> @Model.Id
+</p>
+<p>
+    <strong>Date:</strong> @Model.dateOrder
+</p>
+<p>
+    <strong>Status:</strong> @Model.statusOrder
+</p>
+<p>
+    <strong>Total:</strong> @Model.totalAmount
+</p>
+
+<h3>Items</h3>
+
+<table class="table">
+    <tr>
+        <th>
+            Product
+        </th>
+        <th>
+            Unit Price
+        </th>
+        <th>
+            Quanty
+        </th>
+        <th>
+            Total
+        </th>
+    </tr>
+
+    @foreach (var detail in Model.OrderDetail)
+    {
+        <tr>
+            <td>
+                @detail.Product.nameProd
+            </td>
+            <td>
+                € @detail.unitPrice
+            </td>
+            <td>
+                @detail.quantity
+            </td>
+            <td>
+                @detail.orderTotal
+            </td>
+        </tr>
+    }
+</table>
+
+<p>
+    @Html.ActionLink("Back to My Orders", "Index", null, new { @class = "btn btn-primary" })
+</p>

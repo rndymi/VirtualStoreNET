@@ -1,0 +1,74 @@
+﻿@model VirtualStore.Models.Cart
+
+<h2>Shopping Cart</h2>
+
+@if (!Model.Items.Any())
+{
+    <p>Your cart is empty.</p>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Qty</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.Name</td>
+                <td>€ @item.UnitPrice</td>
+                <td style="white-space:nowrap;">
+                    @using (Html.BeginForm("Decrease", "Cart", FormMethod.Post, new { style = "display:inline;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("id", item.ProductId)
+                        <button type="submit" class="btn btn-default btn-xs">-</button>
+                    }
+
+                    <span style="margin:0 8px;">@item.Quantity</span>
+
+                    @using (Html.BeginForm("Increase", "Cart", FormMethod.Post, new { style = "display:inline;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("id", item.ProductId)
+                        <button type="submit" class="btn btn-default btn-xs">+</button>
+                    }
+                </td>
+                <td>€ @item.OrderTotal</td>
+                <td>
+                    @using (Html.BeginForm("Remove", "Cart", FormMethod.Post, new { style = "display:inline;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("id", item.ProductId)
+                        <button type="submit" class="btn btn-danger btn-xs">X</button>
+                    }
+                </td>
+            </tr>
+        }
+    </table>
+
+    <h4>Total: € @Model.TotalAmount()</h4>
+
+    <p>
+        @using (Html.BeginForm("Clear", "Cart", FormMethod.Post, new { style = "display:inline;" }))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">Clear Cart</button>
+        }
+
+        @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { style = "display:inline; margin-left:8px;" }))
+        {
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-success">Checkout</button>
+        }
+
+        @Html.ActionLink("Continue Shopping", "Index", "Products", null, new { @class = "btn btn-primary", style = "margin-left:8px;" })
+    </p>
+
+
+}

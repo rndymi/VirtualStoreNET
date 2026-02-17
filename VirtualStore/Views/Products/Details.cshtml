@@ -1,0 +1,35 @@
+﻿@model VirtualStore.Product
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>@Model.nameProd</h2>
+
+<div style="display:flex; gap:20px; align-items:flex-start;">
+    <div>
+        @if (!string.IsNullOrWhiteSpace(Model.imageProd))
+        {
+            <img src="@Url.Content(Model.imageProd)" alt="@Model.nameProd" style="width:260px;height:auto;object-fit:cover;" />
+        }
+    </div>
+
+    <div>
+        <p><b>Description:</b> @Model.descripProd</p>
+        <p><b>Price:</b> € @Model.price</p>
+        <p><b>Stock:</b> @Model.stockProd</p>
+
+        @if (Model.stockProd <= 0)
+        {
+            <p><b>OUT TO STOCK</b></p>
+        }
+
+        <p>
+            @Html.ActionLink("Go back", "Index")
+        </p>
+    </div>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

@@ -1,0 +1,16 @@
+﻿@model VirtualStore.Order
+
+@{
+    ViewBag.Title = "Order confirmed";
+}
+
+<h2>Order confirmed</h2>
+
+<p><b>Order Number:</b> @Model.Id</p>
+<p><b>Date:</b> @Model.dateOrder</p>
+<p><b>Total:</b> @Html.DisplayFor(m => m.totalAmount)</p>
+<p><b>Status:</b> @Model.statusOrder</p>
+
+<p>
+    @Html.ActionLink("Back to products", "Index", "Products")
+</p>
