@@ -254,6 +254,7 @@
     <Content Include="Content\images\mesa-madera-recta.png" />
     <Content Include="Content\images\mouse-logitech-pro.png" />
     <Content Include="Content\images\silla-oficina-ergonomica.png" />
+    <Content Include="Content\site-store.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
