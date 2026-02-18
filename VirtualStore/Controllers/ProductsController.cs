@@ -35,6 +35,7 @@ namespace VirtualStore.Controllers
         }
 
         // GET: Products/Create
+        [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
             return View();
@@ -42,6 +43,8 @@ namespace VirtualStore.Controllers
 
         // POST: Products/Create
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Create(FormCollection collection)
         {
             try
@@ -57,6 +60,7 @@ namespace VirtualStore.Controllers
         }
 
         // GET: Products/Edit/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int id)
         {
             return View();
@@ -64,6 +68,8 @@ namespace VirtualStore.Controllers
 
         // POST: Products/Edit/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Edit(int id, FormCollection collection)
         {
             try
@@ -79,6 +85,7 @@ namespace VirtualStore.Controllers
         }
 
         // GET: Products/Delete/5
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
             return View();
@@ -86,6 +93,8 @@ namespace VirtualStore.Controllers
 
         // POST: Products/Delete/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id, FormCollection collection)
         {
             try
