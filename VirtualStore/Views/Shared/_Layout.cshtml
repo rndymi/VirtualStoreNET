@@ -18,10 +18,27 @@
             </button>
             <div class="collapse navbar-collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    <li>@Html.ActionLink("Products", "Index", "Products", null, new { @class = "nav-link" })</li>
-                    <li>@Html.ActionLink("Cart", "Index", "Cart", null, new { @class = "nav-link" })</li>
 
-                    @if (User.Identity.IsAuthenticated) 
+                    @{
+                        var cart = Session["Cart"] as VirtualStore.Models.Cart;
+                        var itemCount = cart != null ? cart.Items.Sum(i => i.Quantity) : 0;
+                    }
+
+                    <li>@Html.ActionLink("Products", "Index", "Products", null, new { @class = "nav-link" })</li>
+
+                    <li>
+                        <a href="@Url.Action("Index", "Cart")" class="nav-link">
+                            Cart
+                            @if (itemCount > 0)
+                            {
+                                <span class="badge bg-danger" style="margin-left:5px;">
+                                    @itemCount
+                                </span>
+                            }
+                        </a>
+                    </li>
+
+                    @if (User.Identity.IsAuthenticated)
                     {
                         <li>
                             @Html.ActionLink("My Orders", "Index", "Orders", null, new { @class = "nav-link" })

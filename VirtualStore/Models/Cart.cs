@@ -11,13 +11,14 @@ namespace VirtualStore.Models
 
         public IEnumerable<CartItem> Items => items;
 
-        public void AddItem(int productId, string name, decimal unitPrice, int quantity = 1)
+        public void AddItem(string imageUrl, int productId, string name, decimal unitPrice, int quantity = 1)
         {
             var item = items.FirstOrDefault(i => i.ProductId == productId);
             if (item == null)
             {
                 items.Add(new CartItem
                 {
+                    ImageURL = imageUrl,
                     ProductId = productId,
                     Name = name,
                     UnitPrice = unitPrice,

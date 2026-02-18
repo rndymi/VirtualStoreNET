@@ -56,7 +56,7 @@ namespace VirtualStore.Controllers
                 return RedirectToAction("Index", "Products");
             }
 
-            cart.AddItem(product.Id, product.nameProd, product.price, 1);
+            cart.AddItem(product.imageProd ,product.Id, product.nameProd, product.price, 1);
             return RedirectToAction("Index");
         }
 
@@ -87,7 +87,7 @@ namespace VirtualStore.Controllers
             }
 
             // Usa datos “fuente de verdad”: los del producto (por si cambia nombre/precio)
-            cart.AddItem(product.Id, product.nameProd, product.price, 1);
+            cart.AddItem(product.imageProd, product.Id, product.nameProd, product.price, 1);
             return RedirectToAction("Index");
         }
 
@@ -132,6 +132,7 @@ namespace VirtualStore.Controllers
         // Post: Cart/Checkout
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Checkout(Cart cart)
         {
             /*

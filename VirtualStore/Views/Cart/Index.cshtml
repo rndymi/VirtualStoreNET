@@ -10,6 +10,7 @@ else
 {
     <table class="table">
         <tr>
+            <th></th>
             <th>Product</th>
             <th>Price</th>
             <th>Qty</th>
@@ -20,6 +21,9 @@ else
         @foreach (var item in Model.Items)
         {
             <tr>
+                <td>
+                    <img src="@item.ImageURL" style="width:60px; height:auto;" />
+                </td>
                 <td>@item.Name</td>
                 <td>€ @item.UnitPrice</td>
                 <td style="white-space:nowrap;">
@@ -61,10 +65,19 @@ else
             <button type="submit" class="btn btn-danger">Clear Cart</button>
         }
 
-        @using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { style = "display:inline; margin-left:8px;" }))
+        @if (User.Identity.IsAuthenticated)
         {
-            @Html.AntiForgeryToken()
-            <button type="submit" class="btn btn-success">Checkout</button>
+            using (Html.BeginForm("Checkout", "Cart", FormMethod.Post, new { style = "display:inline; margin-left:8px;" }))
+            {
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-success">Checkout</button>
+            }
+        }
+        else
+        {
+            <a class="btn btn-success" href="@Url.Action("Login", "Account")" style="margin-left:8px;">
+                Log in to checkout
+            </a>
         }
 
         @Html.ActionLink("Continue Shopping", "Index", "Products", null, new { @class = "btn btn-primary", style = "margin-left:8px;" })
