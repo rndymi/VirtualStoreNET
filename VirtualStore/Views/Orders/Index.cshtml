@@ -4,51 +4,41 @@
     ViewBag.Title = "My Orders";
 }
 
-<h2>My Orders</h2>
+<div class="store-title">
+    <h2>My Orders</h2>
+</div>
 
 @if (!Model.Any())
 {
-    <p>You have no orders yet.</p>
+    <div class="store-card pad text-center" style="padding:40px; color:#8a94a6;">
+        You have no orders yet.
+    </div>
 }
 else
 {
-    <table class="table">
-        <tr>
-            <th>
-                Order Number
-            </th>
-            <th>
-                Date
-            </th>
-            <th>
-                Total
-            </th>
-            <th>
-                Status
-            </th>
-            <th></th>
-        </tr>
+    foreach (var order in Model)
+    {
+        <div class="store-card pad order-card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                <div>
+                    <div style="font-weight:900; font-size:18px;">Order #@order.Id</div>
+                    <div class="order-muted">@order.dateOrder</div>
+                </div>
 
-        @foreach (var order in Model)
-        {
-            <tr>
-                <td>
-                    @order.Id
-                </td>
-                <td>
-                    @order.dateOrder
-                </td>
-                <td>
-                    € @order.totalAmount
-                </td>
-                <td>
-                    @order.statusOrder
-                </td>
-                <td>
-                    @Html.ActionLink("View Details", "Details", new { id = order.Id }, new { @class = "btn btn-info btn-sm" })
-                </td>
-            </tr>
-        }
+                <div style="text-align:right;">
+                    <div class="order-muted" style="font-size:12px;">Stored Amount:</div>
+                    <div class="order-money">€ @order.totalAmount</div>
+                </div>
+            </div>
 
-    </table>
+            <div style="margin-top:10px;">
+                <div><strong>User:</strong> @order.userName</div>
+                <div><strong>Status:</strong> @order.statusOrder</div>
+
+                <div style="margin-top:10px;">
+                    @Html.ActionLink("View Details", "Details", new { id = order.Id }, new { @class = "btn btn-outline" })
+                </div>
+            </div>
+        </div>
+    }
 }

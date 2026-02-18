@@ -14,7 +14,6 @@ body {
     font-family: "Segoe UI", Arial, sans-serif;
 }
 
-/* ====== Layout ====== */
 .store-navbar {
     background: #fff !important;
     border-bottom: 1px solid var(--border);
@@ -50,7 +49,6 @@ body {
         font-weight: 800;
     }
 
-/* ====== Top title with left line ====== */
 .page-title {
     display: flex;
     align-items: center;
@@ -71,7 +69,6 @@ body {
         font-weight: 800;
     }
 
-/* ====== Cards ====== */
 .store-card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -198,7 +195,6 @@ body {
     border-radius: 10px;
 }
 
-/* ====== Cart / Orders cards ====== */
 .big-card {
     padding: 18px;
 }

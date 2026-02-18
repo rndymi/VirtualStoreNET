@@ -4,62 +4,74 @@
     ViewBag.Title = "Order Details";
 }
 
-<h2>Order Details</h2>
+<div class="store-title">
+    <h2>Order Details</h2>
+</div>
 
-<p>
-    <strong>Order Number:</strong> @Model.Id
-</p>
-<p>
-    <strong>Date:</strong> @Model.dateOrder
-</p>
-<p>
-    <strong>Status:</strong> @Model.statusOrder
-</p>
-<p>
-    <strong>Total:</strong> @Model.totalAmount
-</p>
+<div class="store-card pad big-card">
+    <div class="row">
+        <div class="col-sm-7">
+            <p>
+                <strong>Order Number:</strong> @Model.Id
+            </p>
+            <p>
+                <strong>Date:</strong> @Model.dateOrder
+            </p>
+            <p>
+                <strong>Status:</strong> @Model.statusOrder
+            </p>
+        </div>
+        <div class="col-sm-5 text-right">
+            <div class="order-muted">Total:</div>
+            <div class="order-money">€ @Model.totalAmount</div>
+        </div>
 
-<h3>Items</h3>
+    </div>
 
-<table class="table">
-    <tr>
-        <th></th>
-        <th>
-            Product
-        </th>
-        <th>
-            Unit Price
-        </th>
-        <th>
-            Quanty
-        </th>
-        <th>
-            Total
-        </th>
-    </tr>
+    <h3 style="margin-top:18px;">Products</h3>
 
-    @foreach (var detail in Model.OrderDetail)
-    {
-        <tr>
-            <td>
-                <img src="@detail.Product.imageProd" style="width:60px; height:auto;" />
-            </td>
-            <td>
-                @detail.Product.nameProd
-            </td>
-            <td>
-                € @detail.unitPrice
-            </td>
-            <td>
-                @detail.quantity
-            </td>
-            <td>
-                @detail.orderTotal
-            </td>
-        </tr>
-    }
-</table>
+    <table class="table table-clean">
+        <thead>
+            <tr>
+                <th style="width:70px;"></th>
+                <th>Product</th>
+                <th class="text-right">Unit Price</th>
+                <th class="text-center" style="width:120px;">Quantity</th>
+                <th class="text-right" style="width:140px;">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var detail in Model.OrderDetail)
+            {
+                <tr>
+                    <td>
+                        @if (detail.Product != null && !string.IsNullOrWhiteSpace(detail.Product.imageProd))
+                        {
+                            <img src="@Url.Content(detail.Product.imageProd)"
+                                 alt="@detail.Product.nameProd"
+                                 style="width:52px;height:52px;object-fit:cover;border-radius:12px;background:#f3f6fb;" />
+                        }
+                    </td>
+                    <td>
+                        <strong>@detail.Product.nameProd</strong>
+                    </td>
+                    <td class="text-right">€ @detail.unitPrice</td>
+                    <td class="text-center">@detail.quantity</td>
+                    <td class="text-right">€ @detail.orderTotal</td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<p>
-    @Html.ActionLink("Back to My Orders", "Index", null, new { @class = "btn btn-primary" })
-</p>
+    <div class="row" style="margin-top:14px;">
+        <div class="col-sm-6">
+            @Html.ActionLink("Continue shopping", "Index", "Products", null,
+                new { @class = "btn btn-brand" })
+        </div>
+
+        <div class="col-sm-6 text-right">
+            @Html.ActionLink("Back to orders", "Index", "Orders", null,
+                new { @class = "btn btn-outline" })
+        </div>
+    </div>
+</div>

@@ -18,26 +18,6 @@ namespace VirtualStore.Controllers
         }
 
         // Post: Cart/AddToCart/5
-        /*
-        public ActionResult AddToCart(Cart cart, int id)
-        {
-            var product = con.Products.FirstOrDefault(p => p.Id == id);
-
-            if (product == null)
-            {
-                return HttpNotFound();
-            }
-
-            if (product.stockProd <= 0)
-            {
-                return RedirectToAction("Index", "Products");
-            }
-
-            cart.AddItem(product.Id, product.nameProd, product.price, 1);
-
-            return RedirectToAction("Index");
-        }
-        */
         public ActionResult AddToCart(Cart cart, int id)
         {
             var product = con.Products.FirstOrDefault(p => p.Id == id);
@@ -66,13 +46,6 @@ namespace VirtualStore.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Increase(Cart cart, int id)
         {
-            /*var item = cart.Items.FirstOrDefault(i => i.ProductId == id);
-            if (item != null)
-            {
-                cart.AddItem(id, item.Name, item.UnitPrice, 1);
-            }
-
-            return RedirectToAction("Index");*/
 
             var product = con.Products.FirstOrDefault(p => p.Id == id);
             if (product == null) return RedirectToAction("Index");
@@ -86,7 +59,6 @@ namespace VirtualStore.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Usa datos “fuente de verdad”: los del producto (por si cambia nombre/precio)
             cart.AddItem(product.imageProd, product.Id, product.nameProd, product.price, 1);
             return RedirectToAction("Index");
         }
@@ -135,57 +107,6 @@ namespace VirtualStore.Controllers
         [Authorize]
         public ActionResult Checkout(Cart cart)
         {
-            /*
-            if (!cart.Items.Any())
-            {
-                return RedirectToAction("Index");
-            }
-
-            foreach (var item in cart.Items)
-            {
-                var product = con.Products.FirstOrDefault(p => p.Id == item.ProductId);
-                if (product == null || product.stockProd < item.Quantity)
-                {
-                    return RedirectToAction("Index");
-                }
-            }
-
-            var order = new Order
-            {
-                dateOrder = DateTime.Now,
-                statusOrder = "Created",
-                totalAmount = cart.TotalAmount(),
-                userName = (User != null && User.Identity != null && User.Identity.IsAuthenticated)
-                            ? User.Identity.Name
-                            : "Guest"
-            };
-
-            con.Orders.Add(order);
-            con.SaveChanges();
-
-            foreach (var item in cart.Items)
-            {
-                var product = con.Products.FirstOrDefault(p => p.Id == item.ProductId);
-
-                var detail = new OrderDetail
-                {
-                    Order = order,
-                    Product = product,
-                    quantity = item.Quantity,
-                    unitPrice = item.UnitPrice,
-                    orderTotal = item.OrderTotal
-                };
-
-                product.stockProd -= item.Quantity;
-                con.OrderDetails.Add(detail);
-            }
-
-            con.SaveChanges();
-
-            cart.Clear();
-
-            return RedirectToAction("Confirmation", new { id = order.Id });
-            */
             if (!cart.Items.Any())
                 return RedirectToAction("Index");
 
@@ -193,7 +114,6 @@ namespace VirtualStore.Controllers
             {
                 try
                 {
-                    // Revalidación + cargar productos una sola vez
                     var ids = cart.Items.Select(i => i.ProductId).Distinct().ToList();
                     var products = con.Products.Where(p => ids.Contains(p.Id)).ToList();
 
@@ -225,7 +145,7 @@ namespace VirtualStore.Controllers
                     };
 
                     con.Orders.Add(order);
-                    con.SaveChanges(); // Necesario para tener Order.Id
+                    con.SaveChanges();
 
                     foreach (var item in cart.Items)
                     {
