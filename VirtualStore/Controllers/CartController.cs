@@ -221,7 +221,7 @@ namespace VirtualStore.Controllers
                         dateOrder = DateTime.Now,
                         statusOrder = "Created",
                         totalAmount = cart.TotalAmount(),
-                        userName = (User?.Identity?.IsAuthenticated == true) ? User.Identity.Name : "Guest"
+                        userName = User.Identity.Name
                     };
 
                     con.Orders.Add(order);

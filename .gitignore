@@ -2,3 +2,7 @@
 packages/
 bin/
 obj/
+# SQL Server archivos de base de datos
+*.mdf
+*.ldf
+*.sdf

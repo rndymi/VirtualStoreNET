@@ -26,6 +26,7 @@ namespace VirtualStore.Controllers
         }
 
         // GET: Orders/Details/5
+        [Authorize]
         public ActionResult Details(int id)
         {
             var order = con.Orders
