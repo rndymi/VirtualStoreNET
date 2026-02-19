@@ -31,13 +31,13 @@
             </dd>
             @*
                 Phone Numbers can used as a second factor of verification in a two-factor authentication system.
-                
+
                 See <a href="https://go.microsoft.com/fwlink/?LinkId=403804">this article</a>
                     for details on setting up this ASP.NET application to support two-factor authentication using SMS.
-                
+
                 Uncomment the following block after you have set up two-factor authentication
             *@
-            @*  
+            @*
                 <dt>Phone Number:</dt>
                 <dd>
                     @(Model.PhoneNumber ?? "None")
@@ -86,4 +86,33 @@
             </dd>
         </dl>
     </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <hr />
+
+        <div class="page-title">
+            <h2>Admin Panel</h2>
+        </div>
+
+        <div class="store-card pad">
+            <p class="text-muted">Quick access to administration tasks.</p>
+
+            <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:12px;">
+                @* Si luego creas CategoriesController *@
+                @Html.ActionLink("Manage Categories", "Index", "Categories", null, new { @class = "btn btn-brand" })
+                @Html.ActionLink("Create Category", "Create", "Categories", null, new { @class = "btn btn-outline" })
+
+                @Html.ActionLink("Manage Products", "Index", "Products", null, new { @class = "btn btn-brand" })
+                @Html.ActionLink("Create Product", "Create", "Products", null, new { @class = "btn btn-outline" })
+
+                @* Si luego agregas vista admin de órdenes *@
+                @Html.ActionLink("All Orders", "AdminIndex", "Orders", null, new { @class = "btn btn-outline" })
+
+                @* Si luego agregas controlador para alertas *@
+                @Html.ActionLink("Stock Alerts", "Index", "StockAlerts", null, new { @class = "btn btn-outline" })
+            </div>
+        </div>
+    }
+
 </main>

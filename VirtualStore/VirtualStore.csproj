@@ -280,6 +280,7 @@
     <Content Include="Content\images\laptop-dell.png" />
     <Content Include="Content\images\mesa-madera-recta.png" />
     <Content Include="Content\images\mouse-logitech-pro.png" />
+    <Content Include="Content\images\product-default-image.png" />
     <Content Include="Content\images\silla-oficina-ergonomica.png" />
     <Content Include="Content\site-store.css" />
     <Content Include="favicon.ico" />
@@ -360,6 +361,7 @@
     <Content Include="Views\Cart\Confirmation.cshtml" />
     <Content Include="Views\Orders\Index.cshtml" />
     <Content Include="Views\Orders\Details.cshtml" />
+    <Content Include="Views\Products\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

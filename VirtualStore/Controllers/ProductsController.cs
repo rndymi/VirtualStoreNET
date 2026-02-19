@@ -14,7 +14,7 @@ namespace VirtualStore.Controllers
         public ActionResult Index()
         {
             var list = con.Products
-                .Where(p => p.isActiveProd) // && p.stockProd > 0
+                .Where(p => p.isActiveProd) // && p.stockProd > 0  Oculta los products sin stock.
                 .ToList();
             return View(list);
         }
@@ -38,6 +38,7 @@ namespace VirtualStore.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Create()
         {
+            LoadCategories();
             return View();
         }
 
@@ -45,18 +46,78 @@ namespace VirtualStore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(
+            [Bind(Include = "nameProd,descripProd,stockProd,isActiveProd")] Product product,
+            string price,
+            int? Category_Id,
+            HttpPostedFileBase imageFile)
         {
-            try
-            {
-                // TODO: Add insert logic here
+            LoadCategories(Category_Id);
 
-                return RedirectToAction("Index");
-            }
-            catch
+            if (Category_Id == null || Category_Id <= 0)
             {
-                return View();
+                ModelState.AddModelError("Category_Id", "Category is required.");
             }
+
+            if (string.IsNullOrWhiteSpace(price))
+            {
+                ModelState.AddModelError("price", "Price is required.");
+            }
+            else
+            {
+                var normalized = price.Replace(",", ".");
+                if (decimal.TryParse(normalized,
+                        System.Globalization.NumberStyles.Any,
+                        System.Globalization.CultureInfo.InvariantCulture,
+                        out var parsed))
+                {
+                    product.price = parsed;
+                }
+                else
+                {
+                    ModelState.AddModelError("price", "Invalid price format.");
+                }
+            }
+
+            if (imageFile != null && imageFile.ContentLength > 0)
+            {
+                var allowed = new[] { ".png", ".jpg", ".jpeg", ".webp" };
+                var ext = System.IO.Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+
+                if (!allowed.Contains(ext))
+                {
+                    ViewBag.ImageError = "Only .png, .jpg, .jpeg or .webp files are allowed.";
+                    return View(product);
+                }
+
+                var fileName = $"{Guid.NewGuid():N}{ext}";
+                var relativePath = "/Content/images/" + fileName;
+                var physicalPath = Server.MapPath("~/Content/images/" + fileName);
+
+                imageFile.SaveAs(physicalPath);
+                product.imageProd = relativePath;
+            }
+            else
+            {
+                product.imageProd = "/Content/images/product-default-image.png";
+            }
+
+            if (!ModelState.IsValid)
+            {
+                return View(product);
+            }
+
+            var category = con.Categories.Find(Category_Id.Value);
+            if (category == null)
+            {
+                ModelState.AddModelError("Category_Id", "Selected category does not exist.");
+                return View(product);
+            }
+            product.Category = category;
+
+            con.Products.Add(product);
+            con.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // GET: Products/Edit/5
@@ -107,6 +168,18 @@ namespace VirtualStore.Controllers
             {
                 return View();
             }
+        }
+
+
+
+        private void LoadCategories(int? selectedCategoryId = null)
+        {
+            var categories = con.Categories
+                .Where(c => c.isActiveCate)
+                .OrderBy(c => c.nameCate)
+                .ToList();
+
+            ViewBag.Category_Id = new SelectList(categories, "Id", "nameCate", selectedCategoryId);
         }
     }
 }
