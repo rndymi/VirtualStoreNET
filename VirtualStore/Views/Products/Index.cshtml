@@ -15,9 +15,14 @@
     </p>
 }
 
+@if (TempData["CartError"] != null)
+{
+    <div class="alert alert-danger">@TempData["CartError"]</div>
+}
+
 <div class="product-grid">
     @foreach (var item in Model)
-     {
+    {
         <div class="store-card product-card">
             @if (!string.IsNullOrWhiteSpace(item.imageProd))
             {
@@ -43,15 +48,25 @@
             }
 
             <div style="margin-top:10px;">
-                @Html.ActionLink("Details", "Details", new { id = item.Id }, new { @class = "btn btn-outline", style = "margin-right:6px;" })
+                @Html.ActionLink("Details", "Details", new { id = item.Id },
+                    new { @class = "btn btn-outline", style = "margin-right:6px;" })
 
-                @if (item.stockProd > 0)
+                @if (User.IsInRole("Admin") && !item.isActiveProd)
                 {
-                    <a class="btn btn-brand" href="@Url.Action("AddToCart", "Cart", new { id = item.Id })">Add to Cart</a>
+                    <button class="btn btn-danger-soft" disabled style="margin-left:0;">DISCONTINUED</button>
+                }
+                else if (item.stockProd <= 0)
+                {
+                    <button class="btn btn-outline" disabled>OUT OF STOCK</button>
                 }
                 else
                 {
-                    <button class="btn btn-outline" disabled>OUT OF STOCK</button>
+                    using (Html.BeginForm("AddToCart", "Cart", FormMethod.Post, new { style = "display:inline-block;" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("id", item.Id)
+                        <button type="submit" class="btn btn-brand">Add to Cart</button>
+                    }
                 }
             </div>
 
@@ -64,6 +79,6 @@
             }
 
         </div>
-     }
+    }
 </div>
 

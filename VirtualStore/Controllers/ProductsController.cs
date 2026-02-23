@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using VirtualStore.Models.Metadata;
+using VirtualStore.Models.ViewModel;
+using System.Globalization;
 
 namespace VirtualStore.Controllers
 {
@@ -13,24 +17,29 @@ namespace VirtualStore.Controllers
         // GET: Products
         public ActionResult Index()
         {
-            var list = con.Products
-                .Where(p => p.isActiveProd) // && p.stockProd > 0  Oculta los products sin stock.
-                .ToList();
-            return View(list);
+            var query = con.Products.AsQueryable();
+
+            if (!User.IsInRole("Admin"))
+            {
+                query = query.Where(p => p.isActiveProd);
+            }
+
+            return View(query.ToList());
         }
 
         // GET: Products/Details/5
         public ActionResult Details(int? id)
         {
             if (id == null)
-            {
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
-            }
+
             var product = con.Products.Find(id);
             if (product == null)
-            {
                 return HttpNotFound();
-            }
+
+            if (!User.IsInRole("Admin") && !product.isActiveProd)
+                return HttpNotFound();
+
             return View(product);
         }
 
@@ -39,7 +48,11 @@ namespace VirtualStore.Controllers
         public ActionResult Create()
         {
             LoadCategories();
-            return View();
+            var product = new Product
+            {
+                isActiveProd = true
+            };
+            return View(product);
         }
 
         // POST: Products/Create
@@ -122,27 +135,79 @@ namespace VirtualStore.Controllers
 
         // GET: Products/Edit/5
         [Authorize(Roles = "Admin")]
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
-            return View();
+            if (id == null)
+                return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
+
+            var product = con.Products.Find(id);
+            if (product == null)
+                return HttpNotFound();
+
+            int? categoryId = con.Database.SqlQuery<int?>(
+                "SELECT Category_Id FROM Products WHERE Id = @p0", product.Id)
+                .FirstOrDefault();
+
+            var vm = ToProductVm(product, categoryId);
+
+            return View(vm);
         }
 
         // POST: Products/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(ProductViewModel vm)
         {
-            try
-            {
-                // TODO: Add update logic here
+            vm.Categories = BuildCategoriesSelectList(vm.Category_Id);
 
-                return RedirectToAction("Index");
-            }
-            catch
+            var productDb = con.Products.Find(vm.Id);
+            if (productDb == null)
+                return HttpNotFound();
+
+            if (!ModelState.IsValid)
             {
-                return View();
+                vm.imageProd = productDb.imageProd;
+                return View(vm);
             }
+
+            var category = con.Categories.Find(vm.Category_Id.Value);
+            if (category == null)
+            {
+                ModelState.AddModelError("CategoryId", "Selected category does not exist.");
+                vm.imageProd = productDb.imageProd;
+                return View(vm);
+            }
+
+            productDb.nameProd = vm.nameProd;
+            productDb.descripProd = vm.descripProd;
+            productDb.price = vm.price;
+            productDb.stockProd = vm.stockProd;
+            productDb.isActiveProd = vm.isActiveProd;
+            productDb.Category = category;
+
+            if (vm.imageFile != null && vm.imageFile.ContentLength > 0)
+            {
+                var allowed = new[] { ".png", ".jpg", ".jpeg", ".webp" };
+                var ext = System.IO.Path.GetExtension(vm.imageFile.FileName).ToLowerInvariant();
+
+                if (!allowed.Contains(ext))
+                {
+                    ModelState.AddModelError("imageFile", "Only .png, .jpg, .jpeg or .webp files are allowed.");
+                    vm.imageProd = productDb.imageProd;
+                    return View(vm);
+                }
+
+                var fileName = $"{System.Guid.NewGuid():N}{ext}";
+                var relativePath = "/Content/images/" + fileName;
+                var physicalPath = Server.MapPath("~/Content/images/" + fileName);
+
+                vm.imageFile.SaveAs(physicalPath);
+                productDb.imageProd = relativePath;
+            }
+
+            con.SaveChanges();
+            return RedirectToAction("Index");
         }
 
         // GET: Products/Delete/5
@@ -175,11 +240,39 @@ namespace VirtualStore.Controllers
         private void LoadCategories(int? selectedCategoryId = null)
         {
             var categories = con.Categories
-                .Where(c => c.isActiveCate)
                 .OrderBy(c => c.nameCate)
                 .ToList();
 
             ViewBag.Category_Id = new SelectList(categories, "Id", "nameCate", selectedCategoryId);
+        }
+
+        private IEnumerable<SelectListItem> BuildCategoriesSelectList(int? selectedId)
+        {
+            return con.Categories
+                .OrderBy(c => c.nameCate)
+                .ToList()
+                .Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = c.nameCate,
+                    Selected = selectedId.HasValue && c.Id == selectedId.Value
+                });
+        }
+
+        private ProductViewModel ToProductVm(Product p, int? categoryId)
+        {
+            return new ProductViewModel
+            {
+                Id = p.Id,
+                nameProd = p.nameProd,
+                descripProd = p.descripProd,
+                price = p.price,
+                stockProd = p.stockProd,
+                isActiveProd = p.isActiveProd,
+                imageProd = p.imageProd,
+                Category_Id = categoryId,
+                Categories = BuildCategoriesSelectList(categoryId)
+            };
         }
     }
 }

@@ -1,19 +1,24 @@
-﻿@model VirtualStore.Product
+﻿@model VirtualStore.Models.ViewModel.ProductViewModel
 @{
-    ViewBag.Title = "Create Product";
-    var priceValue = (Request["price"] ?? "");
-    var defaultImg = "/Content/images/product-default-image.png";
+    ViewBag.Title = "Edit Product";
+    var priceValue = (Request["price"] ?? (ViewBag.PriceInput as string) ?? Model.price.ToString());
+    var currentImg = string.IsNullOrWhiteSpace(Model.imageProd)
+        ? "/Content/images/product-default-image.png"
+        : Model.imageProd;
 }
 
 <div class="page-title">
-    <h2>Create Product</h2>
+    <h2>Edit Product</h2>
 </div>
 
 <div class="store-card admin-form-card">
-    @using (Html.BeginForm("Create", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("Edit", "Products", new { id = Model.Id }, FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.imageProd)
 
         <div class="admin-form-grid">
 
@@ -23,13 +28,13 @@
                 <div class="admin-row-2">
                     <div>
                         <label class="admin-label">Product name:</label>
-                        @Html.TextBoxFor(m => m.nameProd, new { @class = "admin-input", placeholder = "Product name" })
+                        @Html.TextBoxFor(m => m.nameProd, new { @class = "admin-input" })
                         @Html.ValidationMessageFor(m => m.nameProd, "", new { @class = "text-danger" })
                     </div>
 
                     <div>
                         <label class="admin-label">Price (€):</label>
-                        <input class="admin-input" type="text" name="price" value="@priceValue" placeholder="000,00"/>
+                        <input class="admin-input" type="text" name="price" value="@priceValue" />
                         @Html.ValidationMessage("price", "", new { @class = "text-danger" })
                     </div>
                 </div>
@@ -43,8 +48,8 @@
 
                     <div>
                         <label class="admin-label">Category:</label>
-                        @Html.DropDownList("Category_Id", (SelectList)ViewBag.Category_Id, "-- Select Category --", new { @class = "admin-input" })
-                        @Html.ValidationMessage("Category_Id", "", new { @class = "text-danger" })
+                        @Html.DropDownListFor(m => m.Category_Id, Model.Categories, "-- Select Category --", new { @class = "admin-input" })
+                        @Html.ValidationMessageFor(m => m.Category_Id, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
@@ -55,12 +60,12 @@
 
                 <div class="admin-desc">
                     <label class="admin-label">Product description:</label>
-                    @Html.TextAreaFor(m => m.descripProd, 7, 0, new { @class = "admin-input admin-textarea", placeholder = "Write a longer description..." })
+                    @Html.TextAreaFor(m => m.descripProd, 7, 0, new { @class = "admin-input admin-textarea" })
                     @Html.ValidationMessageFor(m => m.descripProd, "", new { @class = "text-danger" })
                 </div>
 
                 <div class="admin-actions">
-                    <button type="submit" class="btn btn-brand btn-big">Create</button>
+                    <button type="submit" class="btn btn-brand btn-big">Save</button>
                     @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-outline btn-big" })
                 </div>
             </div>
@@ -70,11 +75,11 @@
                 <div class="preview-title">Preview</div>
 
                 <div class="preview-box">
-                    <img id="imgPreview" class="preview-img" src="@Url.Content(defaultImg)" alt="Preview" />
+                    <img id="imgPreview" class="preview-img" src="@Url.Content(currentImg)" alt="Preview" />
                 </div>
 
                 <div class="preview-sub">
-                    <label class="admin-label">Product image</label>
+                    <label class="admin-label">Replace image (optional)</label>
                     <input id="imageFile" type="file" name="imageFile" class="admin-input" accept=".png,.jpg,.jpeg,.webp" />
                     @if (ViewBag.ImageError != null)
                     {

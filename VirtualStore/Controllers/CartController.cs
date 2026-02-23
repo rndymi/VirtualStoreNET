@@ -17,7 +17,9 @@ namespace VirtualStore.Controllers
             return View(cart);
         }
 
-        // Post: Cart/AddToCart/5
+        // POST: Cart/AddToCart/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult AddToCart(Cart cart, int id)
         {
             var product = con.Products.FirstOrDefault(p => p.Id == id);
@@ -25,6 +27,13 @@ namespace VirtualStore.Controllers
             {
                 return HttpNotFound();
             }
+
+            if (!product.isActiveProd)
+            {
+                TempData["CartError"] = "This product is discontinued.";
+                return RedirectToAction("Index", "Products");
+            }
+
             int currentQty = cart.Items
                 .Where(i => i.ProductId == id)
                 .Select(i => i.Quantity)
@@ -36,8 +45,8 @@ namespace VirtualStore.Controllers
                 return RedirectToAction("Index", "Products");
             }
 
-            cart.AddItem(product.imageProd ,product.Id, product.nameProd, product.price, 1);
-            return RedirectToAction("Index");
+            cart.AddItem(product.imageProd, product.Id, product.nameProd, product.price, 1);
+            return RedirectToAction("Index", "Products");
         }
 
 
