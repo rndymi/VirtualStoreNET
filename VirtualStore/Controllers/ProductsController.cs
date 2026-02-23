@@ -60,38 +60,17 @@ namespace VirtualStore.Controllers
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
         public ActionResult Create(
-            [Bind(Include = "nameProd,descripProd,stockProd,isActiveProd")] Product product,
-            string price,
+            [Bind(Include = "nameProd,descripProd,price,stockProd,isActiveProd")] Product product,
             int? Category_Id,
             HttpPostedFileBase imageFile)
         {
             LoadCategories(Category_Id);
 
+            // Validación manual (porque no viene del modelo Product)
             if (Category_Id == null || Category_Id <= 0)
-            {
                 ModelState.AddModelError("Category_Id", "Category is required.");
-            }
 
-            if (string.IsNullOrWhiteSpace(price))
-            {
-                ModelState.AddModelError("price", "Price is required.");
-            }
-            else
-            {
-                var normalized = price.Replace(",", ".");
-                if (decimal.TryParse(normalized,
-                        System.Globalization.NumberStyles.Any,
-                        System.Globalization.CultureInfo.InvariantCulture,
-                        out var parsed))
-                {
-                    product.price = parsed;
-                }
-                else
-                {
-                    ModelState.AddModelError("price", "Invalid price format.");
-                }
-            }
-
+            // Imagen (manual)
             if (imageFile != null && imageFile.ContentLength > 0)
             {
                 var allowed = new[] { ".png", ".jpg", ".jpeg", ".webp" };
@@ -99,10 +78,24 @@ namespace VirtualStore.Controllers
 
                 if (!allowed.Contains(ext))
                 {
-                    ViewBag.ImageError = "Only .png, .jpg, .jpeg or .webp files are allowed.";
-                    return View(product);
+                    ModelState.AddModelError("imageFile", "Only .png, .jpg, .jpeg or .webp files are allowed.");
                 }
+            }
 
+            if (!ModelState.IsValid)
+                return View(product);
+
+            var category = con.Categories.Find(Category_Id.Value);
+            if (category == null)
+            {
+                ModelState.AddModelError("Category_Id", "Selected category does not exist.");
+                return View(product);
+            }
+            product.Category = category;
+
+            if (imageFile != null && imageFile.ContentLength > 0)
+            {
+                var ext = System.IO.Path.GetExtension(imageFile.FileName).ToLowerInvariant();
                 var fileName = $"{Guid.NewGuid():N}{ext}";
                 var relativePath = "/Content/images/" + fileName;
                 var physicalPath = Server.MapPath("~/Content/images/" + fileName);
@@ -114,19 +107,6 @@ namespace VirtualStore.Controllers
             {
                 product.imageProd = "/Content/images/product-default-image.png";
             }
-
-            if (!ModelState.IsValid)
-            {
-                return View(product);
-            }
-
-            var category = con.Categories.Find(Category_Id.Value);
-            if (category == null)
-            {
-                ModelState.AddModelError("Category_Id", "Selected category does not exist.");
-                return View(product);
-            }
-            product.Category = category;
 
             con.Products.Add(product);
             con.SaveChanges();
@@ -236,6 +216,8 @@ namespace VirtualStore.Controllers
         }
 
 
+
+        // Helpers
 
         private void LoadCategories(int? selectedCategoryId = null)
         {

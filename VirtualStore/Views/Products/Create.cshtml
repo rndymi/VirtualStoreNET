@@ -29,15 +29,15 @@
 
                     <div>
                         <label class="admin-label">Price (€):</label>
-                        <input class="admin-input" type="text" name="price" value="@priceValue" placeholder="000,00"/>
-                        @Html.ValidationMessage("price", "", new { @class = "text-danger" })
+                        @Html.TextBoxFor(m => m.price, new { @class = "admin-input", placeholder = "E.g.: 99,99", Value = "" })
+                        @Html.ValidationMessageFor(m => m.price, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="admin-row-2">
                     <div>
                         <label class="admin-label">Stock quantity:</label>
-                        @Html.TextBoxFor(m => m.stockProd, new { @class = "admin-input", type = "number", min = "0", step = "1" })
+                        @Html.TextBoxFor(m => m.stockProd, new { @class = "admin-input", placeholder = "E.g.: 10", Value = "" })
                         @Html.ValidationMessageFor(m => m.stockProd, "", new { @class = "text-danger" })
                     </div>
 
@@ -55,7 +55,7 @@
 
                 <div class="admin-desc">
                     <label class="admin-label">Product description:</label>
-                    @Html.TextAreaFor(m => m.descripProd, 7, 0, new { @class = "admin-input admin-textarea", placeholder = "Write a longer description..." })
+                    @Html.TextAreaFor(m => m.descripProd, 7, 0, new { @class = "admin-input admin-textarea", placeholder = "Write a description... (Optional)" })
                     @Html.ValidationMessageFor(m => m.descripProd, "", new { @class = "text-danger" })
                 </div>
 

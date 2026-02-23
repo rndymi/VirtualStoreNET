@@ -49,7 +49,6 @@ namespace VirtualStore.Controllers
             return RedirectToAction("Index", "Products");
         }
 
-
         // Post: Cart/Increase/5
         [HttpPost]
         [ValidateAntiForgeryToken]

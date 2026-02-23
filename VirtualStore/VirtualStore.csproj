@@ -224,6 +224,7 @@
     <Compile Include="Models\CartItem.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="Models\Metadata\ActiveStockAttribute.cs" />
     <Compile Include="Models\Metadata\CategoryMetadata.cs" />
     <Compile Include="Models\Metadata\OrderMetadata.cs" />
     <Compile Include="Models\Metadata\OrderDetailMetadata.cs" />
