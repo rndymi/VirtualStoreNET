@@ -1,0 +1,36 @@
+﻿@model VirtualStore.Product
+
+@{
+    ViewBag.Title = "Delete Product";
+    bool hasOrders = ViewBag.HasOrders != null && (bool)ViewBag.HasOrders;
+}
+
+<div class="page-title"><h2>Delete Product</h2></div>
+
+<div class="store-card pad">
+    <p><b>Product:</b> @Model.nameProd</p>
+    <p><b>Price:</b> € @Model.price</p>
+    <p><b>Stock:</b> @Model.stockProd</p>
+
+    @if (hasOrders)
+    {
+        <div class="alert alert-warning" style="margin-top:12px;">
+            This product is referenced by existing orders, so it will be marked as <b>DISCONTINUED</b> instead of being deleted.
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" style="margin-top:12px;">
+            This will permanently delete the product.
+        </div>
+    }
+
+    @using (Html.BeginForm("Delete", "Products", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+        @Html.Hidden("id", Model.Id)
+
+        <button type="submit" class="btn btn-danger-soft btn-big">Confirm</button>
+        @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-outline btn-big", style = "margin-left:10px;" })
+    }
+</div>

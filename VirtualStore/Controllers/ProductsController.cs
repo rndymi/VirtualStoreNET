@@ -196,7 +196,14 @@ namespace VirtualStore.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id)
         {
-            return View();
+            var product = con.Products.FirstOrDefault(p => p.Id == id);
+            if (product == null)
+                return HttpNotFound();
+
+            bool hasOrders = con.OrderDetails.Any(od => od.Product.Id == id);
+            ViewBag.HasOrders = hasOrders;
+
+            return View(product);
         }
 
         // POST: Products/Delete/5
@@ -205,16 +212,32 @@ namespace VirtualStore.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Delete(int id, FormCollection collection)
         {
-            try
+            var product = con.Products.FirstOrDefault(p => p.Id == id);
+            if (product == null)
+                return HttpNotFound();
+
+            bool hasOrders = con.OrderDetails.Any(od => od.Product.Id == id);
+
+            var alert = con.StockAlerts.FirstOrDefault(a => a.Product.Id == id);
+            if (alert != null)
+                con.StockAlerts.Remove(alert);
+
+            if (hasOrders)
             {
-                // TODO: Add delete logic here
+                product.isActiveProd = false;
+                product.stockProd = 0;
+
+                con.SaveChanges();
+                TempData["CartError"] = "Product has orders associated. It was marked as DISCONTINUED instead of deleted.";
 
                 return RedirectToAction("Index");
             }
-            catch
-            {
-                return View();
-            }
+
+            con.Products.Remove(product);
+            con.SaveChanges();
+
+            return RedirectToAction("Index");
+
         }
 
 
