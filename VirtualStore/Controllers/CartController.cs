@@ -169,6 +169,8 @@ namespace VirtualStore.Controllers
                         });
 
                         product.stockProd -= item.Quantity;
+
+                        UpsertStockAlert(product);
                     }
 
                     con.SaveChanges();
@@ -195,6 +197,42 @@ namespace VirtualStore.Controllers
                 return HttpNotFound();
             }
             return View(order);
+        }
+
+
+        //Helpers
+
+        private void UpsertStockAlert(Product product)
+        {
+            var alert = con.StockAlerts.FirstOrDefault(a => a.Product.Id == product.Id);
+
+            if (product.stockProd < 2)
+            {
+                if (alert == null)
+                {
+                    alert = new StockAlert
+                    {
+                        Product = product,
+                        currentStock = product.stockProd,
+                        modification = DateTime.Now,
+                        statusStock = "LOW_STOCK"
+                    };
+                    con.StockAlerts.Add(alert);
+                }
+                else
+                {
+                    alert.currentStock = product.stockProd;
+                    alert.modification = DateTime.Now;
+                    alert.statusStock = "LOW_STOCK";
+                }
+            }
+            else
+            {
+                if (alert != null)
+                {
+                    con.StockAlerts.Remove(alert);
+                }
+            }
         }
     }
 }

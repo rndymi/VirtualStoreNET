@@ -231,7 +231,7 @@
         </Association>
         <Association Name="ProductStockAlert">
           <End Type="ModelVirtualStore.Product" Role="Product" Multiplicity="1" />
-          <End Type="ModelVirtualStore.StockAlert" Role="StockAlert" Multiplicity="*" />
+          <End Type="ModelVirtualStore.StockAlert" Role="StockAlert" Multiplicity="0..1" />
         </Association>
       </Schema>
     </edmx:ConceptualModels>
@@ -324,6 +324,7 @@
       <EndProperty Name="StockAlert">
         <ScalarProperty Name="Id" ColumnName="Id" />
       </EndProperty>
+            <Condition ColumnName="Product_Id" IsNull="false" />
     </AssociationSetMapping>
   </EntityContainerMapping>
 </Mapping></edmx:Mappings>

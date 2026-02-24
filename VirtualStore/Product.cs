@@ -18,7 +18,6 @@ namespace VirtualStore
         public Product()
         {
             this.OrderDetail = new HashSet<OrderDetail>();
-            this.StockAlert = new HashSet<StockAlert>();
         }
     
         public int Id { get; set; }
@@ -32,7 +31,6 @@ namespace VirtualStore
         public virtual Category Category { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderDetail> OrderDetail { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<StockAlert> StockAlert { get; set; }
+        public virtual StockAlert StockAlert { get; set; }
     }
 }
