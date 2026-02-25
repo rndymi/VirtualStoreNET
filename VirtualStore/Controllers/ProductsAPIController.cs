@@ -34,5 +34,24 @@ namespace VirtualStore.Controllers
 
             return Ok(products);
         }
+
+        // GET api/products/5
+        [HttpGet]
+        [Route("{id:int}")]
+        public IHttpActionResult GetById(int id)
+        {
+            var p = con.Products.FirstOrDefault(x => x.Id == id);
+            if (p == null) return NotFound();
+
+            return Ok(new
+            {
+                p.Id,
+                name = p.nameProd,
+                description = p.descripProd,
+                p.price,
+                stock = p.stockProd,
+                image = p.imageProd
+            });
+        }
     }
 }
