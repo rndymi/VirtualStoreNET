@@ -201,7 +201,7 @@ namespace VirtualStore.Controllers
             }
 
             bool isAdmin = User.IsInRole("Admin");
-            bool isOwner = string.Equals(order.userName, User.Identity.Name, StringComparison.OrdinalIgnoreCase);
+            bool isOwner = string.Equals(order.userName, User.Identity.Name, System.StringComparison.OrdinalIgnoreCase);
 
             if (!isAdmin && !isOwner)
                 return HttpNotFound();
