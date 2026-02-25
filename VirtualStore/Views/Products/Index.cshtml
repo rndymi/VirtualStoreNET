@@ -10,9 +10,18 @@
 
 @if (User.IsInRole("Admin"))
 {
-    <p>
-        @Html.ActionLink("New Product", "Create", null, new { @class = "btn btn-brand" })
-    </p>
+    <div class="admin-actions">
+        <a class="btn btn-brand"
+           href="@Url.Action("Create","Products",
+                 new { returnUrl = Url.Action("Index","Products") })">
+            New Product
+        </a>
+
+        <a class="btn btn-outline"
+           href="@Url.Action("Index","Manage")">
+            Go to AdminPanel
+        </a>
+    </div>
 }
 
 @if (TempData["CartError"] != null)
@@ -65,14 +74,14 @@
                     {
                         @Html.AntiForgeryToken()
                         @Html.Hidden("id", item.Id)
-                        <button type="submit" class="btn btn-brand">Add to Cart</button>
+                        <button type="submit" class="btn btn-success">Add to Cart</button>
                     }
                 }
             </div>
 
             @if (User.IsInRole("Admin"))
             {
-                <div class="admin-actions">
+                <div class="admin-actions-card">
                     @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-small btn-outline" })
                     @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-small btn-danger-soft" })
                 </div>

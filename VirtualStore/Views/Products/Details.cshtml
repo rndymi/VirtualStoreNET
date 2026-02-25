@@ -4,10 +4,14 @@
     ViewBag.Title = "Product Details";
 }
 
-<div class="store-title">
-    <h2>
-        @Model.nameProd
+<div class="admin-header">
+    <h2 class="page-title">
+        <strong>
+            @Model.nameProd
+        </strong>
     </h2>
+
+    @Html.ActionLink("Back to products", "Index", "Products", null, new { @class = "btn btn-outline", style = "margin-left:10px;" })
 </div>
 
 <div class="store-card pad big-card">
@@ -55,7 +59,7 @@
                     {
                         @Html.AntiForgeryToken()
                         @Html.Hidden("id", Model.Id)
-                        <button type="submit" class="btn btn-brand">Add to Cart</button>
+                        <button type="submit" class="btn btn-success">Add to Cart</button>
                     }
                 }
                 else
@@ -63,8 +67,6 @@
                     <button class="btn btn-outline" disabled>Out of stock</button>
                 }
 
-                @Html.ActionLink("Back to products", "Index", "Products", null,
-                    new { @class = "btn btn-outline", style = "margin-left:10px;" })
 
                 @if (User.IsInRole("Admin"))
                 {

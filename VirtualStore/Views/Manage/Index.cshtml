@@ -99,18 +99,18 @@
             <p class="text-muted">Quick access to administration tasks.</p>
 
             <div style="display:flex; flex-wrap:wrap; gap:12px; margin-top:12px;">
-                @* Si luego creas CategoriesController *@
-                @Html.ActionLink("Manage Categories", "Index", "Categories", null, new { @class = "btn btn-brand" })
-                @Html.ActionLink("Create Category", "Create", "Categories", null, new { @class = "btn btn-outline" })
+                @{
+                    var adminHome = Url.Action("Index", "Manage");
+                }
 
-                @Html.ActionLink("Manage Products", "Index", "Products", null, new { @class = "btn btn-brand" })
-                @Html.ActionLink("Create Product", "Create", "Products", null, new { @class = "btn btn-outline" })
+                @Html.ActionLink("Manage Categories", "Index", "Categories", new { returnUrl = adminHome }, new { @class = "btn btn-brand" })
+                @Html.ActionLink("Create Category", "Create", "Categories", new { returnUrl = adminHome }, new { @class = "btn btn-outline" })
 
-                @* Si luego agregas vista admin de órdenes *@
+                @Html.ActionLink("Manage Products", "Index", "Products", new { returnUrl = adminHome }, new { @class = "btn btn-brand" })
+                @Html.ActionLink("Create Product", "Create", "Products",new { returnUrl = Url.Action("Index", "Manage") },new { @class = "btn btn-outline" })
+
                 @Html.ActionLink("All Orders", "AdminIndex", "Orders", null, new { @class = "btn btn-outline" })
-
-                @* Si luego agregas controlador para alertas *@
-                @Html.ActionLink("Stock Alerts", "Index", "StockAlerts", null, new { @class = "btn btn-outline" })
+                @Html.ActionLink("Stock Alerts", "AdminIndex", "StockAlerts", new { returnUrl = adminHome }, new { @class = "btn btn-outline" })
             </div>
         </div>
     }

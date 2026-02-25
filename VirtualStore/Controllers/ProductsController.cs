@@ -45,8 +45,22 @@ namespace VirtualStore.Controllers
 
         // GET: Products/Create
         [Authorize(Roles = "Admin")]
-        public ActionResult Create()
+        public ActionResult Create(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.BackText = "Back";
+            if (!string.IsNullOrWhiteSpace(returnUrl))
+            {
+                if (returnUrl.IndexOf("/Manage", StringComparison.OrdinalIgnoreCase) >= 0)
+                    ViewBag.BackText = "Back to AdminPanel";
+                else
+                    ViewBag.BackText = "Back";
+            }
+            else
+            {
+                ViewBag.BackText = "Back to Products";
+            }
+
             LoadCategories();
             var product = new Product
             {
@@ -62,8 +76,22 @@ namespace VirtualStore.Controllers
         public ActionResult Create(
             [Bind(Include = "nameProd,descripProd,price,stockProd,isActiveProd")] Product product,
             int? Category_Id,
-            HttpPostedFileBase imageFile)
+            HttpPostedFileBase imageFile, 
+            string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.BackText = "Back";
+
+            if (!string.IsNullOrWhiteSpace(returnUrl) &&
+                returnUrl.IndexOf("/Manage", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                ViewBag.BackText = "Back to AdminPanel";
+            }
+            else if (string.IsNullOrWhiteSpace(returnUrl))
+            {
+                ViewBag.BackText = "Back to Products";
+            }
+
             LoadCategories(Category_Id);
 
             if (Category_Id == null || Category_Id <= 0)
@@ -110,6 +138,10 @@ namespace VirtualStore.Controllers
             UpsertStockAlert(product);
 
             con.SaveChanges();
+
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
             return RedirectToAction("Index");
         }
 
@@ -313,6 +345,13 @@ namespace VirtualStore.Controllers
                     con.StockAlerts.Remove(alert);
                 }
             }
+        }
+
+        private bool IsAdminPanelReturn(string returnUrl)
+        {
+            return !string.IsNullOrWhiteSpace(returnUrl)
+                   && Url.IsLocalUrl(returnUrl)
+                   && returnUrl.IndexOf("/Manage", StringComparison.OrdinalIgnoreCase) >= 0;
         }
     }
 }

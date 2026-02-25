@@ -5,14 +5,32 @@
     var defaultImg = "/Content/images/product-default-image.png";
 }
 
-<div class="page-title">
-    <h2>Create Product</h2>
+<div class="admin-header">
+    <h2 class="store-title">
+        <strong>
+            Create Product
+        </strong>
+    </h2>
+
+    @{
+        string back = ViewBag.ReturnUrl as string;
+        string backText = ViewBag.BackText as string ?? "Back";
+        string backHref = (!string.IsNullOrWhiteSpace(back) && Url.IsLocalUrl(back))
+            ? back
+            : Url.Action("Index", "Products");
+    }
+
+    <a class="btn btn-outline" href="@backHref">@backText</a>
+
+    @Html.Hidden("returnUrl", back)
+
 </div>
 
 <div class="store-card admin-form-card">
     @using (Html.BeginForm("Create", "Products", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         @Html.AntiForgeryToken()
+        @Html.Hidden("returnUrl", ViewBag.ReturnUrl as string)
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
         <div class="admin-form-grid">
