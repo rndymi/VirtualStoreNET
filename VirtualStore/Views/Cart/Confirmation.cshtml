@@ -12,8 +12,8 @@
     <p><b>Total:</b> @Html.DisplayFor(m => m.totalAmount)</p>
     <p><b>Status:</b> @Model.statusOrder</p>
 
-    <p>
-        @Html.ActionLink("Back to products", "Index", "Products")
-    </p>
+    <div class="admin-actions center" style="margin-top:16px;">
+        <a class="btn btn-brand btn-big" href="@Url.Action("Index","Products")">Back to products</a>
+    </div>
 
 </div>

@@ -216,6 +216,7 @@
     <Compile Include="Controllers\OrdersController.cs" />
     <Compile Include="Controllers\ProductsAPIController.cs" />
     <Compile Include="Controllers\ProductsController.cs" />
+    <Compile Include="Controllers\StockAlertsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -373,6 +374,7 @@
     <Content Include="Views\Categories\Edit.cshtml" />
     <Content Include="Views\Orders\AdminIndex.cshtml" />
     <Content Include="Views\Orders\EditStatus.cshtml" />
+    <Content Include="Views\StockAlerts\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

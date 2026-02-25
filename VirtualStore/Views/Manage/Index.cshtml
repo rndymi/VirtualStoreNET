@@ -110,7 +110,7 @@
                 @Html.ActionLink("Create Product", "Create", "Products",new { returnUrl = Url.Action("Index", "Manage") },new { @class = "btn btn-outline" })
 
                 @Html.ActionLink("All Orders", "AdminIndex", "Orders", null, new { @class = "btn btn-outline" })
-                @Html.ActionLink("Stock Alerts", "AdminIndex", "StockAlerts", new { returnUrl = adminHome }, new { @class = "btn btn-outline" })
+                @Html.ActionLink("Stock Alerts", "Index", "StockAlerts", new { returnUrl = adminHome }, new { @class = "btn btn-outline" })
             </div>
         </div>
     }

@@ -1,0 +1,67 @@
+﻿@model IEnumerable<VirtualStore.StockAlert>
+@{
+    ViewBag.Title = "Stock Alerts";
+}
+
+<div class="admin-header">
+    <h2 class="page-title">
+        <strong>
+            Stock Alerts
+        </strong>
+    </h2>
+
+    <a class="btn btn-outline"
+       href="@Url.Action("Index","Manage")">
+        Back to AdminPanel
+    </a>
+</div>
+
+<div class="store-card pad">
+    <div class="muted" style="margin-bottom:10px;">
+        <strong>
+            Active low-stock alerts (stock &lt; 2).
+        </strong>
+    </div>
+
+    <table class="table-clean stockalerts-table">
+        <thead>
+            <tr>
+                <th class="col-product">Product</th>
+                <th class="col-center">Current Stock</th>
+                <th class="col-center">Last Update</th>
+                <th class="col-center">Status</th>
+                <th class="col-actions"></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var a in Model)
+            {
+                <tr>
+                    <td class="col-product">
+                        @(a.Product != null ? a.Product.nameProd : "")
+                    </td>
+
+                    <td class="col-center">@a.currentStock</td>
+                    <td class="col-center">@a.modification</td>
+                    <td class="col-center">
+                        <span class="pill pill-warning">@a.statusStock</span>
+                    </td>
+
+                    <td class="col-actions">
+                        @if (a.Product != null)
+                        {
+                            @Html.ActionLink(
+                                "Edit Product",
+                                "Edit",
+                                "Products",
+                                new { id = a.Product.Id, returnUrl = Url.Action("Index", "StockAlerts") },
+                                new { @class = "btn btn-outline btn-small" }
+                            )
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

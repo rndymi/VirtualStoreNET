@@ -30,23 +30,23 @@
         @Html.ActionLink("Create Category", "Create", null, new { @class = "btn btn-brand" })
     </div>
 
-    <table class="table-clean" style="margin-top:12px;">
+    <table class="table-clean table-card" style="margin-top:12px;">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Active</th>
-                <th style="width:180px;"></th>
+                <th class="col-product">Name</th>
+                <th class="col-product">Description</th>
+                <th class="col-center">Active</th>
+                <th class="col-actions"></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var c in Model)
             {
                 <tr>
-                    <td>@c.nameCate</td>
-                    <td>@c.descripCate</td>
-                    <td>@(c.isActiveCate ? "Yes" : "No")</td>
-                    <td style="text-align:right;">
+                    <td class="col-product">@c.nameCate</td>
+                    <td class="col-product">@c.descripCate</td>
+                    <td class="col-center">@(c.isActiveCate ? "Yes" : "No")</td>
+                    <td class="col-actions">
                         @Html.ActionLink("Edit", "Edit", new { id = c.Id }, new { @class = "btn btn-outline btn-small" })
                         @Html.ActionLink("Delete", "Delete", new { id = c.Id }, new { @class = "btn btn-danger-soft btn-small", style = "margin-left:8px;" })
                     </td>

@@ -7,6 +7,15 @@
         : Model.imageProd;
 }
 
+@{
+    var returnUrl = (string)ViewBag.ReturnUrl ?? Url.Action("Index", "Products");
+    var isFromStockAlerts = returnUrl.IndexOf("/StockAlerts", StringComparison.OrdinalIgnoreCase) >= 0;
+
+    var backText = isFromStockAlerts ? "Back to Stock Alerts" : "Back to List";
+}
+
+@Html.Hidden("returnUrl", returnUrl)
+
 <div class="page-title">
     <h2>Edit Product</h2>
 </div>
@@ -66,7 +75,10 @@
 
                 <div class="admin-actions">
                     <button type="submit" class="btn btn-brand btn-big">Save</button>
-                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-outline btn-big" })
+
+                    <a class="btn btn-outline btn-big" href="@returnUrl">
+                        @backText
+                    </a>
                 </div>
             </div>
 

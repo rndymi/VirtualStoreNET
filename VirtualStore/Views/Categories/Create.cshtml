@@ -1,6 +1,11 @@
 ﻿@model VirtualStore.Category
 @{
     ViewBag.Title = "Create Category";
+    
+    if (Model != null && Model.Id == 0)
+    {
+        Model.isActiveCate = true;
+    }
 }
 
 @{

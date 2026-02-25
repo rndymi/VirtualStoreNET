@@ -147,7 +147,7 @@ namespace VirtualStore.Controllers
 
         // GET: Products/Edit/5
         [Authorize(Roles = "Admin")]
-        public ActionResult Edit(int? id)
+        public ActionResult Edit(int? id, string returnUrl)
         {
             if (id == null)
                 return new HttpStatusCodeResult(System.Net.HttpStatusCode.BadRequest);
@@ -162,6 +162,10 @@ namespace VirtualStore.Controllers
 
             var vm = ToProductVm(product, categoryId);
 
+            ViewBag.ReturnUrl = string.IsNullOrWhiteSpace(returnUrl)
+        ? Url.Action("Index", "Products")
+        : returnUrl;
+
             return View(vm);
         }
 
@@ -169,7 +173,7 @@ namespace VirtualStore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public ActionResult Edit(ProductViewModel vm)
+        public ActionResult Edit(ProductViewModel vm, string returnUrl)
         {
             vm.Categories = BuildCategoriesSelectList(vm.Category_Id);
 
@@ -180,6 +184,9 @@ namespace VirtualStore.Controllers
             if (!ModelState.IsValid)
             {
                 vm.imageProd = productDb.imageProd;
+                ViewBag.ReturnUrl = string.IsNullOrWhiteSpace(returnUrl)
+                ? Url.Action("Index", "Products")
+                : returnUrl;
                 return View(vm);
             }
 
@@ -221,6 +228,8 @@ namespace VirtualStore.Controllers
             UpsertStockAlert(productDb);
 
             con.SaveChanges();
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
             return RedirectToAction("Index");
         }
 
