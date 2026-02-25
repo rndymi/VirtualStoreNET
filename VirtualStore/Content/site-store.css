@@ -110,6 +110,11 @@ body {
     font-weight: 700;
     margin-top: 10px;
     margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+    min-height: 44px;
 }
 
 .product-price {
@@ -333,7 +338,27 @@ body {
     justify-content: center;
     gap: 12px;
     margin-top: 18px;
+    font-size: 12px;
 }
+
+.admin-link {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 700;
+}
+
+    .admin-link:hover {
+        color: #111827;
+        text-decoration: underline;
+    }
+
+    .admin-link.danger {
+        color: var(--danger);
+    }
+
+        .admin-link.danger:hover {
+            color: #b02a37;
+        }
 
 .preview-panel {
     border-radius: 16px;

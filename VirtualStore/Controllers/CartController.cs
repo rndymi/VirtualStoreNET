@@ -191,11 +191,21 @@ namespace VirtualStore.Controllers
         // GET: Cart/Confirmation/5
         public ActionResult Confirmation(int id)
         {
+            if (!Request.IsAuthenticated)
+                return HttpNotFound();
+
             var order = con.Orders.FirstOrDefault(o => o.Id == id);
             if (order == null)
             {
                 return HttpNotFound();
             }
+
+            bool isAdmin = User.IsInRole("Admin");
+            bool isOwner = string.Equals(order.userName, User.Identity.Name, StringComparison.OrdinalIgnoreCase);
+
+            if (!isAdmin && !isOwner)
+                return HttpNotFound();
+
             return View(order);
         }
 

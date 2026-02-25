@@ -72,9 +72,9 @@
 
             @if (User.IsInRole("Admin"))
             {
-                <div style="margin-top:12px; font-size:12px;">
-                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                <div class="admin-actions">
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }, new { @class = "btn btn-small btn-outline" })
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "btn btn-small btn-danger-soft" })
                 </div>
             }
 
