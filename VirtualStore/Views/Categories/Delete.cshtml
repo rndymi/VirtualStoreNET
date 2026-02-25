@@ -1,0 +1,37 @@
+﻿@model VirtualStore.Category
+@{
+    ViewBag.Title = "Delete Category";
+    bool hasProducts = ViewBag.HasProducts != null && (bool)ViewBag.HasProducts;
+}
+
+<div class="page-title"><h2>Delete Category</h2></div>
+
+<div class="store-card pad">
+    <p><b>Category:</b> @Model.nameCate</p>
+    <p><b>Description:</b> @Model.descripCate</p>
+
+    @if (hasProducts)
+    {
+        <div class="text-danger" style="margin-top:10px;">
+            This category has products assigned and cannot be deleted.
+        </div>
+        <div style="margin-top:14px;">
+            @Html.ActionLink("Back", "Index", null, new { @class = "btn btn-outline" })
+        </div>
+    }
+    else
+    {
+        <div class="text-danger" style="margin-top:10px;">
+            This will permanently delete the category.
+        </div>
+
+        using (Html.BeginForm("Delete", "Categories", new { id = Model.Id }, FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <div style="margin-top:14px;">
+                <button type="submit" class="btn btn-danger-soft">Confirm Delete</button>
+                @Html.ActionLink("Cancel", "Index", null, new { @class = "btn btn-outline", style = "margin-left:10px;" })
+            </div>
+        }
+    }
+</div>

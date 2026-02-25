@@ -1,0 +1,48 @@
+﻿@model IEnumerable<VirtualStore.Category>
+@{
+    ViewBag.Title = "Manage Categories";
+}
+
+<div class="page-title">
+    <h2>Manage Categories</h2>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="text-danger" style="margin-bottom:10px;">@TempData["Error"]</div>
+}
+@if (TempData["Success"] != null)
+{
+    <div class="text-success" style="margin-bottom:10px;">@TempData["Success"]</div>
+}
+
+<div class="store-card pad">
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        @Html.ActionLink("Create Category", "Create", null, new { @class = "btn btn-brand" })
+    </div>
+
+    <table class="table-clean" style="margin-top:12px;">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Active</th>
+                <th style="width:180px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td>@c.nameCate</td>
+                    <td>@c.descripCate</td>
+                    <td>@(c.isActiveCate ? "Yes" : "No")</td>
+                    <td style="text-align:right;">
+                        @Html.ActionLink("Edit", "Edit", new { id = c.Id }, new { @class = "btn btn-outline btn-small" })
+                        @Html.ActionLink("Delete", "Delete", new { id = c.Id }, new { @class = "btn btn-danger-soft btn-small", style = "margin-left:8px;" })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
