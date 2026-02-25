@@ -5,25 +5,10 @@
     var defaultImg = "/Content/images/product-default-image.png";
 }
 
-<div class="admin-header">
-    <h2 class="store-title">
-        <strong>
-            Create Product
-        </strong>
+<div class="page-title">
+    <h2>
+        Create Product
     </h2>
-
-    @{
-        string back = ViewBag.ReturnUrl as string;
-        string backText = ViewBag.BackText as string ?? "Back";
-        string backHref = (!string.IsNullOrWhiteSpace(back) && Url.IsLocalUrl(back))
-            ? back
-            : Url.Action("Index", "Products");
-    }
-
-    <a class="btn btn-outline" href="@backHref">@backText</a>
-
-    @Html.Hidden("returnUrl", back)
-
 </div>
 
 <div class="store-card admin-form-card">
@@ -79,7 +64,18 @@
 
                 <div class="admin-actions">
                     <button type="submit" class="btn btn-brand btn-big">Create</button>
-                    @Html.ActionLink("Back to List", "Index", null, new { @class = "btn btn-outline btn-big" })
+                    
+                    @{
+                        string back = ViewBag.ReturnUrl as string;
+                        string backText = ViewBag.BackText as string ?? "Back";
+                        string backHref = (!string.IsNullOrWhiteSpace(back) && Url.IsLocalUrl(back))
+                            ? back
+                            : Url.Action("Index", "Products");
+                    }
+
+                    <a class="btn btn-outline" href="@backHref">@backText</a>
+
+                    @Html.Hidden("returnUrl", back)
                 </div>
             </div>
 

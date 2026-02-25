@@ -21,20 +21,45 @@ namespace VirtualStore.Controllers
         }
 
         // GET: Categories/Create
-        public ActionResult Create()
+        public ActionResult Create(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
+
+            ViewBag.BackText = "Back";
+            if (!string.IsNullOrWhiteSpace(returnUrl) &&
+                returnUrl.IndexOf("/Manage", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                ViewBag.BackText = "Back to AdminPanel";
+            }
+
             return View(new Category());
         }
 
         // POST: Categories/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "nameCate,descripCate,isActiveCate")] Category category)
+        public ActionResult Create(
+            [Bind(Include = "nameCate,descripCate,isActiveCate")] Category category,
+            string returnUrl)
         {
-            if (!ModelState.IsValid) return View(category);
+            ViewBag.ReturnUrl = returnUrl;
+            ViewBag.BackText = "Back";
+
+            if (!string.IsNullOrWhiteSpace(returnUrl) &&
+                returnUrl.IndexOf("/Manage", StringComparison.OrdinalIgnoreCase) >= 0)
+            {
+                ViewBag.BackText = "Back to AdminPanel";
+            }
+
+            if (!ModelState.IsValid)
+                return View(category);
 
             con.Categories.Add(category);
             con.SaveChanges();
+
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
             return RedirectToAction("Index");
         }
 

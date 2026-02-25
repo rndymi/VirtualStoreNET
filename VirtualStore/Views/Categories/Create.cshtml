@@ -3,6 +3,14 @@
     ViewBag.Title = "Create Category";
 }
 
+@{
+    string back = ViewBag.ReturnUrl as string;
+    string backText = ViewBag.BackText as string ?? "Back";
+    string backHref = (!string.IsNullOrWhiteSpace(back) && Url.IsLocalUrl(back))
+        ? back
+        : Url.Action("Index", "Categories");
+}
+
 <div class="page-title">
     <h2>
         Create Category
@@ -35,7 +43,11 @@
 
         <div class="admin-actions" style="justify-content:flex-start; margin-top:14px;">
             <button class="btn btn-brand" type="submit">Create</button>
-            @Html.ActionLink("Back", "Index", null, new { @class = "btn btn-outline", style = "margin-left:10px;" })
+
+            <a class="btn btn-outline" href="@backHref">
+                @backText
+            </a>
+
         </div>
     }
 </div>

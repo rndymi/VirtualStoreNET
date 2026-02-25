@@ -3,8 +3,17 @@
     ViewBag.Title = "Manage Categories";
 }
 
-<div class="page-title">
-    <h2>Manage Categories</h2>
+<div class="admin-header">
+    <h2 class="store-title">
+        <strong>
+            Manage Categories
+        </strong>
+    </h2>
+
+    <a class="btn btn-outline"
+       href="@Url.Action("Index","Manage")">
+        Back to AdminPanel
+    </a>
 </div>
 
 @if (TempData["Error"] != null)
