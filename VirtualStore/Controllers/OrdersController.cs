@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Data.Entity;
 using VirtualStore.Models;
 
 namespace VirtualStore.Controllers
@@ -27,88 +28,84 @@ namespace VirtualStore.Controllers
 
         // GET: Orders/Details/5
         [Authorize]
-        public ActionResult Details(int id)
+        public ActionResult Details(int id, string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             var order = con.Orders
+                .Include(o => o.OrderDetail.Select(od => od.Product))
                 .FirstOrDefault(o => o.Id == id);
 
             if (order == null)
-            {
                 return HttpNotFound();
-            }
 
-            if (order.userName != User.Identity.Name)
+            bool isAdmin = User.IsInRole("Admin");
+            bool isStaff = User.IsInRole("Logistics");
+            bool isOwner = string.Equals(order.userName, User.Identity.Name, StringComparison.OrdinalIgnoreCase);
+
+            if (!isAdmin && !isStaff && !isOwner)
+                return HttpNotFound();
+
+            if (!string.IsNullOrWhiteSpace(returnUrl) && !Url.IsLocalUrl(returnUrl))
             {
-                return new HttpUnauthorizedResult();
+                ViewBag.ReturnUrl = null;
             }
 
             return View(order);
         }
 
-        // GET: Orders/Create
-        public ActionResult Create()
+        // GET: Orders/AdminIndex
+        [Authorize(Roles = "Admin")]
+        public ActionResult AdminIndex()
         {
-            return View();
+            var orders = con.Orders
+                .OrderByDescending(o => o.dateOrder)
+                .ToList();
+
+            return View(orders);
         }
 
-        // POST: Orders/Create
+        // GET: Orders/EditStatus/5
+        [Authorize(Roles = "Admin,Logistics")]
+        public ActionResult EditStatus(int id, string returnUrl)
+        {
+            var order = con.Orders.FirstOrDefault(o => o.Id == id);
+            if (order == null) return HttpNotFound();
+
+            ViewBag.ReturnUrl = returnUrl;
+
+            ViewBag.AllowedStatus = new SelectList(new[]
+            {
+                "Created", "Processing", "Shipped", "Delivered", "Cancelled"
+            }, order.statusOrder);
+
+            return View(order);
+        }
+
+        // POST: Orders/EditStatus/5
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin,Logistics")]
+        public ActionResult EditStatus(int id, string statusOrder, string returnUrl)
         {
-            try
+            var order = con.Orders.FirstOrDefault(o => o.Id == id);
+            if (order == null) return HttpNotFound();
+
+            var allowed = new[] { "Created", "Processing", "Shipped", "Delivered", "Cancelled" };
+            if (!allowed.Contains(statusOrder))
             {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
+                ViewBag.ReturnUrl = returnUrl;
+                ViewBag.AllowedStatus = new SelectList(allowed, statusOrder);
+                ModelState.AddModelError("statusOrder", "Invalid status.");
+                return View(order);
             }
-            catch
-            {
-                return View();
-            }
-        }
 
-        // GET: Orders/Edit/5
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
+            order.statusOrder = statusOrder;
+            con.SaveChanges();
 
-        // POST: Orders/Edit/5
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
+            if (!string.IsNullOrWhiteSpace(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
 
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        // GET: Orders/Delete/5
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        // POST: Orders/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
+            return RedirectToAction("Details", new { id = order.Id });
         }
     }
 }

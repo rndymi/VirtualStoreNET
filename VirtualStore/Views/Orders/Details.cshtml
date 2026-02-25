@@ -4,6 +4,14 @@
     ViewBag.Title = "Order Details";
 }
 
+@{
+    var returnUrl = ViewBag.ReturnUrl as string;
+    if (string.IsNullOrWhiteSpace(returnUrl) || !Url.IsLocalUrl(returnUrl))
+    {
+        returnUrl = Url.Action("Index", "Orders");
+    }
+}
+
 <div class="store-title">
     <h2>Order Details</h2>
 </div>
@@ -24,6 +32,20 @@
         <div class="col-sm-5 text-right">
             <div class="order-muted">Total:</div>
             <div class="order-money">€ @Model.totalAmount</div>
+
+
+            <div>
+                @if (User.IsInRole("Admin") || User.IsInRole("Logistics"))
+                {
+                    @Html.ActionLink(
+                        "Edit status",
+                        "EditStatus",
+                        "Orders",
+                        new { id = Model.Id, returnUrl = Request.RawUrl },
+                        new { @class = "btn btn-outline" }
+                    )
+                }
+            </div>
         </div>
 
     </div>
@@ -63,15 +85,19 @@
         </tbody>
     </table>
 
-    <div class="row" style="margin-top:14px;">
-        <div class="col-sm-6">
-            @Html.ActionLink("Continue shopping", "Index", "Products", null,
-                new { @class = "btn btn-brand" })
-        </div>
+    <div class="admin-actions" style="justify-content:space-between; margin-top:16px;">
 
-        <div class="col-sm-6 text-right">
-            @Html.ActionLink("Back to orders", "Index", "Orders", null,
-                new { @class = "btn btn-outline" })
-        </div>
+        @Html.ActionLink(
+            "Continue shopping",
+            "Index",
+            "Products",
+            null,
+            new { @class = "btn btn-brand" }
+        )
+
+        <a href="@returnUrl" class="btn btn-outline">
+            Back
+        </a>
+
     </div>
 </div>

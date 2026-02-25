@@ -52,6 +52,12 @@ body {
         font-weight: 800;
     }
 
+.page-title-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .store-card {
     background: var(--card);
     border: 1px solid var(--border);
@@ -359,6 +365,13 @@ body {
         .admin-link.danger:hover {
             color: #b02a37;
         }
+
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
 
 .preview-panel {
     border-radius: 16px;

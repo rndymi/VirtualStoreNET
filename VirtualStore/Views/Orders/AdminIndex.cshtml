@@ -1,0 +1,62 @@
+﻿@model IEnumerable<VirtualStore.Order>
+@{
+    ViewBag.Title = "All Orders";
+}
+
+<div class="admin-header">
+    <h2>All Orders</h2>
+
+    @Html.ActionLink(
+        "Back to Admin Panel",
+        "Index",
+        "Manage",
+        null,
+        new { @class = "btn btn-outline-secondary" }
+    )
+</div>
+
+<div class="store-card pad">
+    <table class="table-clean">
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>User</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th style="width:120px;"></th>
+                <th style="width:120px;"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var o in Model)
+            {
+                <tr>
+                    <td>@o.Id</td>
+                    <td>@o.userName</td>
+                    <td>@o.dateOrder</td>
+                    <td>@o.totalAmount</td>
+                    <td>@o.statusOrder</td>
+                    <td style="text-align:right;">
+                        @Html.ActionLink(
+                            "Details",
+                            "Details",
+                            "Orders",
+                            new { id = o.Id, returnUrl = Request.RawUrl },
+                            new { @class = "btn btn-outline btn-small" }
+                        )
+                    </td>
+                    <td style="text-align:right;">
+                        @Html.ActionLink(
+                            "Edit status",
+                            "EditStatus",
+                            "Orders",
+                            new { id = o.Id, returnUrl = Request.RawUrl },
+                            new { @class = "btn btn-outline btn-small" }
+                        )
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

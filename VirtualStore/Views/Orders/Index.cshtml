@@ -36,7 +36,13 @@ else
                 <div><strong>Status:</strong> @order.statusOrder</div>
 
                 <div style="margin-top:10px;">
-                    @Html.ActionLink("View Details", "Details", new { id = order.Id }, new { @class = "btn btn-outline" })
+                    @Html.ActionLink(
+                        "Details",
+                        "Details",
+                        "Orders",
+                        new { id = order.Id, returnUrl = Request.RawUrl },
+                        new { @class = "btn btn-outline btn-small" }
+                    )
                 </div>
             </div>
         </div>
