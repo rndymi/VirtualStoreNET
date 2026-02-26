@@ -27,17 +27,14 @@ public class ActiveStockAttribute : ValidationAttribute
         var isActiveObj = activeProp.GetValue(validationContext.ObjectInstance);
         var isActive = isActiveObj is bool b && b;
 
-        // si no está activo, no me importa el stock
         if (!isActive) return ValidationResult.Success;
 
-        // si value es null, lo debería atrapar [Required] en el metadata
         if (value == null) return ValidationResult.Success;
 
         int stock;
         try { stock = (int)value; }
         catch { return ValidationResult.Success; }
 
-        // ✅ Permitimos stock = 0, solo bloqueamos negativos
         if (stock < 0)
             return new ValidationResult(ErrorMessage ?? "Stock cannot be negative.");
 
